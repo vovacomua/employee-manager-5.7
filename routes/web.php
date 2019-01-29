@@ -11,6 +11,5 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'TreeController@index');
+Route::get('/tree', 'TreeController@tree');
