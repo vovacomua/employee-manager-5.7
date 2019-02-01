@@ -11,6 +11,19 @@
 
 @section('content')
 
-  <div id="container"></div>        
+<div class="container">
+
+	<div class="card mt-2">
+	  <div class="card-header">
+	    Employees tree
+	  </div>
+	  <div class="card-body">
+
+	  	  <div id="container"></div> 
+
+	  </div>
+	</div>
+
+</div>
 
 @endsection
