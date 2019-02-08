@@ -13,3 +13,5 @@
 
 Route::get('/', 'TreeController@index');
 Route::get('/tree', 'TreeController@tree');
+
+Route::get('/list', 'ListController@index');
