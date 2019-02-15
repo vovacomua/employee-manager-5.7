@@ -10,19 +10,29 @@
 
   	<tbody>
 
-    @foreach($employees as $employee)
+  	@if (count($employees) > 0)
 
-	    <tr>
-	    	<td>{{ $employee->id }}</td>
-	        <td> {{ $employee->parent_id }} </td>
-	        <td> {{ $employee->full_name }} </td>
-	        <td> {{ $employee->position }} </td>
-	        <td> {{ $employee->start_date }} </td>
-	        <td> {{ $employee->salary }} </td>
+  	    @foreach($employees as $employee)
 
-	    </tr>
+		    <tr>
+		    	<td> {{ $employee->id }} </td>
+		        <td> {{ $employee->parent_id }} </td>
+		        <td> {{ $employee->full_name }} </td>
+		        <td> {{ $employee->position }} </td>
+		        <td> {{ $employee->start_date }} </td>
+		        <td> {{ $employee->salary }} </td>
 
-    @endforeach
+		    </tr>
+
+    	@endforeach
+    
+	@else
+
+	   <tr>
+            <td align="center" colspan="6">No Data Found</td>
+       </tr>
+	    
+	@endif
 
 	</tbody>
 	</table>
