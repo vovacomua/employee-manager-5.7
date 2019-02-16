@@ -14,9 +14,9 @@
 Route::get('/', 'TreeController@index');
 Route::get('/tree', 'TreeController@tree');
 
-Route::get('/list', 'ListController@index');
-Route::get('/list/order', 'ListController@order')->name('order');
-Route::get('/list/search', 'ListController@search')->name('search');
+Route::get('/home/list', 'ListController@index');
+Route::get('/home/list/order', 'ListController@order')->name('order');
+Route::get('/home/list/search', 'ListController@search')->name('search');
 
 Auth::routes();
 

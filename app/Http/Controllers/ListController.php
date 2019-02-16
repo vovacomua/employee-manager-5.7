@@ -8,7 +8,17 @@ use App\Http\Requests\SearchRequest;
 
 class ListController extends Controller
 {
-     
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
      /**
      * Display a page with a list of all employees
      *
