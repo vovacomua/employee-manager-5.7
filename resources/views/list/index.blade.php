@@ -1,5 +1,11 @@
 @extends('layouts.master')
 
+@section('scripts')
+
+  @include('list.scripts')
+
+@endsection
+
 @section('content')
 
 <div class="container">

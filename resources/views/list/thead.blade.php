@@ -21,17 +21,17 @@
 
 	      		{{ strtoupper(str_replace('_', ' ', $col['name'])) }}
 
-	      		<a href="{{ route('order', ['field' => $col['name'], 'order' => 'asc']) }}">
+	      		<a href="#" class="order" data-values="field={{ $col['name'] }}&order=asc">
 	      			<i class="fas fa-arrow-circle-up"></i>
 	      		</a>
 
-	      		<a href="{{ route('order', ['field' => $col['name'], 'order' => 'desc']) }}">
+	      		<a href="#" class="order" data-values="field={{ $col['name'] }}&order=desc">
 	      			<i class="fas fa-arrow-circle-down"></i>
 	      		</a>
 
 	      	</div>
 
-	      	<form method="GET" action="{{ route('search') }}">
+	      	<form class="search">
 	      		<input type="hidden" name="search_field" value="{{ $col['name'] }}">
 				<div class="input-group mt-2">
 
