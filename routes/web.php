@@ -14,10 +14,12 @@
 Route::get('/', 'TreeController@index');
 Route::get('/tree', 'TreeController@tree');
 
-Route::get('/home/list', 'ListController@index');
-Route::get('/home/list/order', 'ListController@order')->name('order');
-Route::get('/home/list/search', 'ListController@search')->name('search');
+Route::get('/home/employees', 'EmployeeController@index');
+Route::get('/home/employees/order', 'EmployeeController@order')->name('order');
+Route::get('/home/employees/search', 'EmployeeController@search')->name('search');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('/home/employees', 'EmployeeController');
