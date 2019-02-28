@@ -2,6 +2,7 @@
 	//Array of columns with corresponding field names
 
 	$cols = [
+		['name' => 'EMPTY'],
 		['name' => 'id', 		'type' => 'text', 'placeholder' => '1', 		'pattern' => '^\d{1,10}$'],
 		['name' => 'parent_id', 'type' => 'text', 'placeholder' => '1', 		'pattern' => '^\d{1,10}$'],
 		['name' => 'full_name', 'type' => 'text', 'placeholder' => 'John Doe',	'pattern' => '^.{1,255}$'],

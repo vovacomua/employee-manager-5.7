@@ -16,7 +16,7 @@
               </div><br />
             @endif
 
-              <form method="post" action="{{ action('EmployeeController@update', $id) }}"> 
+              <form method="post" action="{{ action('EmployeeController@update', $id) }}" enctype="multipart/form-data"> 
                   {{ csrf_field() }}
                   {{ method_field('PATCH') }}
 
@@ -60,6 +60,33 @@
                   </div>
               </div>
 
+              <div class="form-group row">
+                  <label class="col-md-4 col-form-label text-md-right">Current Photo</label>
+
+                  <div class="col-md-6" id="photo-preview">
+                    <img src="{{ (($employee->has_photo == '1') ? asset('storage/photos/'.$employee->id.'.jpg') : asset('storage/photos/no-photo.jpg')) }}" style="max-height:150px">
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label for="photo-del" class="col-md-4 form-check-label text-md-right">Delete Photo</label>
+
+                  <div class="col">
+                      <input id="photo-del" type="checkbox" class="form-check-input ml-1" value="true" name="photo-del">
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label for="photo" class="col-md-4 col-form-label text-md-right">New Photo (.jpeg)</label>
+
+                  <div class="col-md-6">
+                      
+                      <label class="btn btn-outline-secondary"> Browse 
+                        <input id="photo" type="file" class="form-control" name="photo" accept="image/jpeg" hidden>
+                      </label>
+                  </div>
+              </div> 
+
               <div class="form-group row mb-0">
                   <div class="col-md-8 offset-md-4">
                       <button type="submit" class="btn btn-primary">
@@ -77,5 +104,7 @@
       </div>
     </div>
   </div>
+
+  @include ('list.scripts-photo')
 
 @endsection

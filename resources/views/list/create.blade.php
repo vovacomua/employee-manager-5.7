@@ -16,7 +16,7 @@
               </div><br />
             @endif
 
-              <form method="post" action="{{ action('EmployeeController@store' )}}"> 
+              <form method="post" action="{{ action('EmployeeController@store' )}}" enctype="multipart/form-data"> 
                   {{ csrf_field() }}
 
                 <div class="form-group row">
@@ -59,6 +59,25 @@
                   </div>
               </div>
 
+              <div class="form-group row">
+                  <label class="col-md-4 col-form-label text-md-right"></label>
+
+                  <div class="col-md-6" id="photo-preview">
+                    <img src="{{ asset('storage/photos/no-photo.jpg') }}" style="max-height:150px">
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label for="photo" class="col-md-4 col-form-label text-md-right">Add Photo (.jpeg)</label>
+
+                  <div class="col-md-6">
+                      
+                      <label class="btn btn-outline-secondary"> Browse 
+                        <input id="photo" type="file" class="form-control" name="photo" accept="image/jpeg" hidden>
+                      </label>
+                  </div>
+              </div>             
+
               <div class="form-group row mb-0">
                   <div class="col-md-8 offset-md-4">
                       <button type="submit" class="btn btn-primary">
@@ -76,5 +95,7 @@
       </div>
     </div>
   </div>
+
+  @include ('list.scripts-photo')
 
 @endsection

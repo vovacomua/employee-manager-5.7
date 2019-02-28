@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Employee;
 use App\Http\Requests\SearchRequest;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -56,19 +57,29 @@ class EmployeeController extends Controller
             'full_name' => 'required|max:255',
             'position'  => 'required|max:255',
             'start_date'=> 'required|date',
-            'salary'    => 'required|regex:/^\d{1,5}(\.\d{2})?$/'
+            'salary'    => 'required|regex:/^\d{1,5}(\.\d{2})?$/',
+            'photo'     => 'nullable|mimes:jpeg'
         ]);
+
+        $has_photo = $request->hasFile('photo') ? 1 : 0;
 
         $employee = Employee::create([
                     'full_name' => $request->input('full_name'), 
                     'position' => $request->input('position'), 
                     'start_date' => $request->input('start_date'), 
-                    'salary' => $request->input('salary')
+                    'salary' => $request->input('salary'),
+                    'has_photo' => $has_photo
                     ]); 
         
         if ($request->filled('parent_id')){
             $boss = Employee::find($request->input('parent_id'));
             $employee->makeChildOf($boss);
+        }
+
+        if ($has_photo){
+            $request->file('photo')->storeAs(
+                'photos', $employee->id.'.jpg', 'public'
+            ); 
         }
 
         return redirect('/home/employees')->with('success','New Employee has been created.');
@@ -114,8 +125,17 @@ class EmployeeController extends Controller
             'full_name' => 'required|max:255',
             'position'  => 'required|max:255',
             'start_date'=> 'required|date',
-            'salary'    => 'required|regex:/^\d{1,5}(\.\d{2})?$/'
+            'salary'    => 'required|regex:/^\d{1,5}(\.\d{2})?$/',
+            'photo'     => 'nullable|mimes:jpeg',
+            'photo-del' => 'nullable|in:true',
         ]);
+
+        $new_photo = $request->hasFile('photo');
+        $delete_photo = $request->filled('photo-del');
+
+        $change_photo = 2;
+        if ($new_photo)     $change_photo = 1;
+        if ($delete_photo)  $change_photo = 0;
 
         $employee = Employee::findOrFail($id);
 
@@ -123,6 +143,7 @@ class EmployeeController extends Controller
         $employee->position = $request->input('position');
         $employee->start_date = $request->input('start_date');
         $employee->salary = $request->input('salary');
+        if ($change_photo < 2) $employee->has_photo = $change_photo;
         
         $employee->save();
 
@@ -151,6 +172,16 @@ class EmployeeController extends Controller
             }
         }
 
+        if ($new_photo){
+            $request->file('photo')->storeAs(
+                'photos', $employee->id.'.jpg', 'public'
+            ); 
+        }
+
+        if ($delete_photo){
+            Storage::disk('public')->delete('photos/'.$employee->id.'.jpg');
+        }
+
         return redirect('/home/employees')->with('success', 'Employee info has been updated.');
     }
 
@@ -163,6 +194,11 @@ class EmployeeController extends Controller
     public function destroy($id)
     {
         $employee = Employee::findOrFail($id);
+
+        if ($employee->has_photo) {
+            Storage::disk('public')->delete('photos/'.$employee->id.'.jpg');
+        }
+
         $employee->delete();
         return redirect('/home/employees')->with('success','Employee has been deleted.');
     }
@@ -232,30 +268,33 @@ class EmployeeController extends Controller
                     $url_destroy = action('EmployeeController@destroy', $row->id);
                     $token = csrf_field();
                     $method = method_field('DELETE');
+                    $photo = $row->has_photo == '1' ? asset('storage/photos/'.$row->id.'.jpg') : asset('storage/photos/no-photo.jpg');
 
-                   $output .= '
-                    <tr>
-                     <td>'.$row->id.'</td>
-                     <td>'.$row->parent_id.'</td>
-                     <td>'.$row->full_name.'</td>
-                     <td>'.$row->position.'</td>
-                     <td>'.$row->start_date.'</td>
-                     <td>'.$row->salary.'</td>
+                    $output .= 
+                        '<tr>
 
-                     <td>
-                        <a href="'.$url_edit.'" class="btn btn-warning"> <i class="fas fa-edit"></i> </a>
-                     </td>
+                         <td><img src="'.$photo.'" style="max-height:40px; max-width:40px"></td>
+                         <td>'.$row->id.'</td>
+                         <td>'.$row->parent_id.'</td>
+                         <td>'.$row->full_name.'</td>
+                         <td>'.$row->position.'</td>
+                         <td>'.$row->start_date.'</td>
+                         <td>'.$row->salary.'</td>
 
-                     <td>
-                        <form action="'.$url_destroy.'" method="post">
-                          '.$token.'
-                          '.$method.'
-                          <button class="btn btn-danger" type="submit"> <i class="far fa-trash-alt"></i> </button>
-                        </form>
-                     </td>
+                         <td>
+                            <a href="'.$url_edit.'" class="btn btn-warning"> <i class="fas fa-edit"></i> </a>
+                         </td>
 
-                    </tr>
-                    ';
+                         <td>
+                            <form action="'.$url_destroy.'" method="post">
+                              '.$token.'
+                              '.$method.'
+                              <button class="btn btn-danger" type="submit"> <i class="far fa-trash-alt"></i> </button>
+                            </form>
+                         </td>
+
+                        </tr>'
+                    ;
                    }                  
                 }
 

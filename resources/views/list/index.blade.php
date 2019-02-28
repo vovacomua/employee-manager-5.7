@@ -34,7 +34,13 @@
 
   	    @foreach($employees as $employee)
 
-		    <tr>
+			    <tr>
+
+			    <td> 
+			    	<img src="{{ $employee->has_photo == '1' ? asset('storage/photos/'.$employee->id.'.jpg') : asset('storage/photos/no-photo.jpg') }}" 
+			    		style="max-height:40px; max-width:40px">
+			    </td>
+
 		    	<td> {{ $employee->id }} </td>
 		        <td> {{ $employee->parent_id }} </td>
 		        <td> {{ $employee->full_name }} </td>
@@ -61,7 +67,7 @@
 	@else
 
 	   <tr>
-            <td align="center" colspan="6">No Data Found</td>
+            <td align="center" colspan="9">No Data Found</td>
        </tr>
 	    
 	@endif
