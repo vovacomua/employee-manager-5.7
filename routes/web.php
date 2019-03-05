@@ -13,6 +13,7 @@
 
 Route::get('/', 'TreeController@index');
 Route::get('/tree', 'TreeController@tree');
+Route::get('/treerebase', 'TreeController@treeRebase');
 
 Route::get('/home/employees', 'EmployeeController@index');
 Route::get('/home/employees/order', 'EmployeeController@order')->name('order');

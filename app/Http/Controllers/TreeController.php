@@ -31,6 +31,11 @@ class TreeController extends Controller
         if ($request->id > 0){
             return $this->lazyLoadSecondLevel($request->id);
         } else {
+            //For preventing from effort to modify irrelevant tree modified by someone else during your session
+            //log the last modification timestamp
+            $request->session()->regenerate();
+            $request->session()->put('ts', $this->getLastUpdateTimestamp());
+
             return $this->lazyLoadFirstLevel();
         }
     }
@@ -80,6 +85,58 @@ class TreeController extends Controller
         $tree = $tree->values();
 
         return $tree;
+    }
+
+    /**
+     * Process drag & drop request - assign new boss for the given employee
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response|JSON
+     */
+    public function treeRebase(Request $request)
+    {
+
+        $session_ts = $request->session()->get('ts');
+
+        //Check if anyone else had already modified employees tree during your session
+        //If so - cancel your modification
+        if ($this->getLastUpdateTimestamp() == $session_ts){
+            $employee = Employee::find($request->id);
+
+            if ($request->parent_id > 0){
+                $boss = Employee::find($request->parent_id);
+                        $employee->makeChildOf($boss);
+
+            } else {
+                $employee->makeRoot();
+            }
+
+            $request->session()->put('ts', $this->getLastUpdateTimestamp());
+            return response()->json([
+                'status' => 'success', 
+                'message' => 'OK'
+            ]); 
+
+        } else {
+            return response()->json([
+                'status' => 'error', 
+                'message' => 'Somebody has already modified employees tree. Refresh this page and try again.'
+            ]);
+        }
+
+    }
+
+    /**
+     * Get timestamp of the last modification of employees tree
+     *
+     * @return int
+     */
+    private function getLastUpdateTimestamp()
+    {
+        $edited = Employee::latest('updated_at')->first();
+        $timestamp = $edited->updated_at->getTimestamp();
+
+        return $timestamp;
     }
 
 }
