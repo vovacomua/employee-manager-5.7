@@ -3,8 +3,10 @@
       $('#container').jstree({
         'core' : {
           'data' : {
-            "url" : "{{ url('/tree') }}",
-            "dataType" : "json" 
+            "url" : "{{ url('/tree/?lazy') }}",
+            "data" : function (node) {
+              return { "id" : node.id };
+            }
           }
         }
       });
