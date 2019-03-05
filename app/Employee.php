@@ -3,6 +3,7 @@
 namespace App;
 
 use Baum\Node;
+use App\Events\BossDeleting;
 
 /**
 * Employee
@@ -22,6 +23,15 @@ class Employee extends Node {
    * @var array
    */
   protected $visible = ['id', 'children', 'text'];
+
+  /**
+   * The event map for the model.
+   *
+   * @var array
+   */
+  protected $dispatchesEvents = [
+      'deleting' => BossDeleting::class,
+  ];
 
   /**
    * The accessor to append to the model's array.
